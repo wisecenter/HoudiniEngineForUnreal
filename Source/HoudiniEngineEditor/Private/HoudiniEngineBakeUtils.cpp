@@ -5727,15 +5727,16 @@ FHoudiniEngineBakeUtils::BakeCurve(
 	FHoudiniBakedObjectData& BakedObjectData,
 	FName InOverrideFolderPath,
 	AActor* InActor,
-	UActorFactory* InActorFactory)
+	TSubclassOf<AActor> BakeActorClass)
 {
 	if (!IsValid(InActor))
 	{
-		TSubclassOf<AActor> BakeActorClass = nullptr;
 		UActorFactory* Factory = nullptr;
-		if (IsValid(InActorFactory))
+		if (IsValid(BakeActorClass))
 		{
-			Factory = InActorFactory;
+			Factory = GEditor->FindActorFactoryForActorClass(BakeActorClass);
+			if (!Factory)
+				Factory = GEditor->FindActorFactoryByClass(UActorFactoryClass::StaticClass());
 		}
 		else
 		{
@@ -5858,10 +5859,24 @@ FHoudiniEngineBakeUtils::BakeCurve(
 			RemovePreviouslyBakedComponent(PrevComponent);
 		}
 	}
-	
+
+	TSubclassOf<AActor> BakeActorClass = GetBakeActorClassOverride(InOutputObject);
+
 	USplineComponent* NewSplineComponent = nullptr;
 	const FName OutlinerFolderPath = GetOutlinerFolderPath(InResolver, *(PackageParams.HoudiniAssetActorName));
-	if (!BakeCurve(InHoudiniAssetComponent, SplineComponent, DesiredLevel, PackageParams, BakeSettings, BakeActorName, FoundActor, NewSplineComponent, BakedObjectData, OutlinerFolderPath, FoundActor))
+	if (!BakeCurve(
+		InHoudiniAssetComponent, 
+		SplineComponent, 
+		DesiredLevel, 
+		PackageParams, 
+		BakeSettings, 
+		BakeActorName, 
+		FoundActor, 
+		NewSplineComponent, 
+		BakedObjectData, 
+		OutlinerFolderPath, 
+		FoundActor, 
+		BakeActorClass))
 		return false;
 
 	InBakedOutputObject.Actor = FSoftObjectPath(FoundActor).ToString();
