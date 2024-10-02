@@ -1091,7 +1091,7 @@ TArray<FVector> FHoudiniSkeletalMeshTranslator::GetPointForPhysicsBone(const FHo
 {
 	auto Bone = Skeleton.BoneMap.Find(BoneName);
 
-	auto BoneTransform = (*Bone)->UnrealGlobalMatrix.Inverse();
+	auto BoneTransform = (*Bone)->UnrealGlobalTransform.Inverse();
 
 	// Convert Houdini Points to Unreal Points.
 	TArray<FVector> UnrealPoints;
