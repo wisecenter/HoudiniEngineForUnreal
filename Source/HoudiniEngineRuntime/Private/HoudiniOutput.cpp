@@ -1408,8 +1408,11 @@ void FHoudiniOutputObject::DestroyCookedData()
 
 	for (auto Actor : OutputActors)
 	{
-		Actor->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
-		Actor->Destroy();
+		if (Actor.IsValid())
+		{
+			Actor->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+			Actor->Destroy();
+		}
 	}
 	OutputActors.Empty();
 }
