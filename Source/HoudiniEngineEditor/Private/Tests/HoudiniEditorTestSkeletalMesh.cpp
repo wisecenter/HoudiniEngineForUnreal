@@ -139,7 +139,6 @@ bool FHoudiniEditorTestSkeletalMeshElectra::RunTest(const FString& Parameters)
 	return true;
 }
 
-#if 0
 IMPLEMENT_SIMPLE_HOUDINI_AUTOMATION_TEST(FHoudiniEditorTestSkeletalMeshElectraDefaultPhysicsAsset, "Houdini.UnitTests.SkeletalMesh.ElectraDefaultPhysicsAsset", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::ProductFilter)
 
 bool FHoudiniEditorTestSkeletalMeshElectraDefaultPhysicsAsset::RunTest(const FString& Parameters)
@@ -582,6 +581,5 @@ bool FHoudiniEditorTestSkeletalMeshElectraExistingSkeleton::RunTest(const FStrin
 
 	return true;
 }
-#endif
 #endif
 
