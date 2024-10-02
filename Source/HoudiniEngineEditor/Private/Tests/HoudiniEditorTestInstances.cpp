@@ -46,7 +46,6 @@
 #include "LevelInstance/LevelInstanceComponent.h"
 #endif
 
-#if 0
 void FHoudiniInstanceAutomationTest::CheckPositions(const TArray<FVector>& Positions)
 {
 	for(int Index = 0; Index < Positions.Num(); Index++)
@@ -1253,5 +1252,4 @@ bool FHoudiniEditorTestProxyMeshInstances::RunTest(const FString& Parameters)
 
 	return true;
 }
-#endif
 #endif
