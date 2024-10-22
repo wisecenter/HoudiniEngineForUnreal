@@ -780,6 +780,9 @@ protected:
 	UPROPERTY()
 	UHoudiniPDGAssetLink* PDGAssetLink;
 
+	UPROPERTY()
+	bool bIsPDGAssetLinkInitialized;
+
 	// Timer that is used to trigger creation of UStaticMesh for all mesh outputs
 	// that still have UHoudiniStaticMeshes. The timer is cleared on PreCook and reset
 	// at the end of the PostCook.
@@ -835,6 +838,9 @@ protected:
 	// used to limit the frequency at which we ping HDAs for session sync updates
 	UPROPERTY(Transient)
 	double LastLiveSyncPingTime;
+
+	UPROPERTY()
+	TArray<int8> ParameterPresetBuffer;
 
 	//
 	// Begin: IHoudiniAssetStateEvents
