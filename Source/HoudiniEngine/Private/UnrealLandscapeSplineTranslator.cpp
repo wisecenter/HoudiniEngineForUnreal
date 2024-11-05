@@ -686,7 +686,10 @@ FUnrealLandscapeSplineTranslator::CreateInputNode(
 	{
 		// We successfully added tags to the geo, so we need to commit the changes
 		if (HAPI_RESULT_SUCCESS != FHoudiniEngineUtils::HapiCommitGeo(OutNodeId))
+		{
 			HOUDINI_LOG_WARNING(TEXT("Could not create groups for the landscape spline input's tags!"));
+			return false;
+		}
 
 		// And cook it with refinement disabled (we want to strictly keep the control points and segments as they are)
 		HAPI_CookOptions CookOptions = FHoudiniEngine::GetDefaultCookOptions();
@@ -1325,9 +1328,11 @@ FUnrealLandscapeSplineTranslator::AddTargetLandscapeAttribute(
 	const FString LandscapeActorPath = InLandscapeActor->GetPathName();
 
 	// Set the attribute's string data
+	HAPI_AttributeInfo AttrInfo;
+	FHoudiniApi::AttributeInfo_Init(&AttrInfo);
 	FHoudiniHapiAccessor Accessor(InNodeId, InPartId, HAPI_UNREAL_ATTRIB_LANDSCAPE_SPLINE_TARGET_LANDSCAPE);
-	Accessor.AddAttribute(InAttribOwner, HAPI_STORAGETYPE_STRING, 1, InCount);
-	HOUDINI_CHECK_RETURN(Accessor.SetAttributeUniqueData(InAttribOwner, LandscapeActorPath), false);
+	Accessor.AddAttribute(InAttribOwner, HAPI_STORAGETYPE_STRING, 1, InCount, &AttrInfo);
+	HOUDINI_CHECK_RETURN(Accessor.SetAttributeUniqueData(AttrInfo, LandscapeActorPath), false);
 
 	return true;
 }	
@@ -1448,7 +1453,7 @@ bool FUnrealLandscapeSplineTranslator::AddSegmentMeshesAttributes(HAPI_NodeId In
 		// Add the mesh scale attribute
 		FString MeshScaleAttrName = FString::Printf(TEXT("%s%s"), *MeshAttrName, TEXT(HAPI_UNREAL_ATTRIB_LANDSCAPE_SPLINE_MESH_SCALE_SUFFIX));
 		FHoudiniHapiAccessor ScaleAttrAccessor(InNodeId, 0, TCHAR_TO_ANSI(*MeshScaleAttrName));
-		ScaleAttrAccessor.AddAttribute(HAPI_ATTROWNER_PRIM, HAPI_STORAGETYPE_FLOAT, 1, NumSegments, &AttrInfo);
+		ScaleAttrAccessor.AddAttribute(HAPI_ATTROWNER_PRIM, HAPI_STORAGETYPE_FLOAT, 3, NumSegments, &AttrInfo);
 		bool bSuccess = ScaleAttrAccessor.SetAttributeData(AttrInfo, MeshSegmentData.MeshScales);
 
 		// Material overrides
@@ -1489,7 +1494,7 @@ FUnrealLandscapeSplineTranslator::AddRotationAttribute(HAPI_NodeId InNodeId, con
 
 	HAPI_AttributeInfo AttrInfo;
 	FHoudiniHapiAccessor Accessor(InNodeId, 0, HAPI_UNREAL_ATTRIB_ROTATION);
-	Accessor.AddAttribute(HAPI_ATTROWNER_POINT, HAPI_STORAGETYPE_FLOAT, 4, InData.Num(), &AttrInfo);
+	Accessor.AddAttribute(HAPI_ATTROWNER_POINT, HAPI_STORAGETYPE_FLOAT, 4, InData.Num() / 4, &AttrInfo);
 	HOUDINI_CHECK_RETURN(Accessor.SetAttributeData(AttrInfo, InData), false);
 	return true;
 
