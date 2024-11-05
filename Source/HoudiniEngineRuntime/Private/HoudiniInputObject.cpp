@@ -1676,9 +1676,18 @@ UHoudiniInputLandscapeSplinesComponent::Update(UObject * InObject, const FHoudin
 	{
 		for (int32 Idx = 0; Idx < NumControlPoints; ++Idx)
 		{
+#if ENGINE_MAJOR_VERSION == 5 && ENGINE_MINOR_VERSION >= 5
+			TObjectPtr<ULandscapeSplineControlPoint>& ControlPoint = ControlPoints[Idx];
+#else
 			ULandscapeSplineControlPoint const* const ControlPoint = ControlPoints[Idx];
+#endif
 			FHoudiniLandscapeSplineControlPointData& CachedControlPoint = CachedControlPoints[Idx];
+
+#if ENGINE_MAJOR_VERSION == 5 && ENGINE_MINOR_VERSION >= 5
+			if (!ControlPoint)
+#else
 			if (!IsValid(ControlPoint))
+#endif
 			{
 				// Reset entry to default
 				CachedControlPoint = {};
@@ -2207,7 +2216,11 @@ UHoudiniInputActor::Update(UObject * InObject, const FHoudiniInputObjectSettings
 					}
 
 					const bool bAllowShrink = false;
+#if ENGINE_MAJOR_VERSION == 5 && ENGINE_MINOR_VERSION >= 5
+					ActorComponents.RemoveAtSwap(IndexToRemove, 1, bAllowShrink ? EAllowShrinking::Yes : EAllowShrinking::No);
+#else
 					ActorComponents.RemoveAtSwap(IndexToRemove, 1, bAllowShrink);
+#endif
 
 					LastUpdateNumComponentsRemoved++;
 				}
@@ -2976,7 +2989,11 @@ UHoudiniInputBlueprint::Update(UObject* InObject, const FHoudiniInputObjectSetti
 						BPSceneComponents.Remove(CurBPComp->InputObject);
 
 					const bool bAllowShrink = false;
+#if ENGINE_MAJOR_VERSION == 5 && ENGINE_MINOR_VERSION >= 5
+					BPComponents.RemoveAtSwap(IndexToRemove, 1, bAllowShrink ? EAllowShrinking::Yes : EAllowShrinking::No);
+#else
 					BPComponents.RemoveAtSwap(IndexToRemove, 1, bAllowShrink);
+#endif
 
 					LastUpdateNumComponentsRemoved++;
 				}
