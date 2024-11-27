@@ -80,6 +80,14 @@ public:
 	// unreal_bake_folder attribute value
 	UPROPERTY()
 	FString BakeFolder;
+
+	// Data Layers which should be applied (during Baking only).
+	UPROPERTY()
+	TArray<FHoudiniDataLayer> DataLayers;
+
+	// HLOD Layers which should be applied (during Baking only).
+	UPROPERTY()
+	TArray<FHoudiniHLODLayer> HLODLayers;
 };
 
 USTRUCT()
@@ -206,6 +214,14 @@ public:
 	// See BuildFlatInstancedTransformsAndObjectPaths().
 	UPROPERTY()
 	TArray<float> PerInstanceCustomDataFlat;
+
+	// Data Layers which should be applied (during Baking only).
+	UPROPERTY()
+	TArray<FHoudiniAttributeDataLayer> DataLayers;
+
+	// HLOD Layers which should be applied (during Baking only).
+	UPROPERTY()
+	TArray<FHoudiniHLODLayer> HLODLayers;
 
 	void BuildFlatInstancedTransformsAndObjectPaths();
 

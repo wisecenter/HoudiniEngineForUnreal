@@ -39,6 +39,7 @@
 #include "HoudiniStaticMeshComponent.h"
 #include "HoudiniStaticMesh.h"
 #include "HoudiniFoliageTools.h"
+#include "HoudiniHLODLayerUtils.h"
 
 //#include "HAPI/HAPI_Common.h"
 
@@ -180,6 +181,8 @@ FHoudiniInstanceTranslator::PopulateInstancedOutputPartData(
 	// See if we have instancer material overrides
 	if (!GetMaterialOverridesFromAttributes(InHGPO.GeoId, InHGPO.PartId, 0, InHGPO.InstancerType, OutInstancedOutputPartData.MaterialAttributes))
 		OutInstancedOutputPartData.MaterialAttributes.Empty();
+	OutInstancedOutputPartData.DataLayers = FHoudiniDataLayerUtils::GetDataLayers(InHGPO.GeoId, InHGPO.PartId, HAPI_GROUPTYPE_POINT);
+	OutInstancedOutputPartData.HLODLayers = FHoudiniHLODLayerUtils::GetHLODLayers(InHGPO.GeoId, InHGPO.PartId, HAPI_ATTROWNER_POINT);
 
 	return true;
 }
@@ -569,6 +572,16 @@ FHoudiniInstanceTranslator::CreateAllInstancersFromHoudiniOutput(
 
 			if(InstancedOutputPartData.AllBakeActorClassNames.IsValidIndex(FirstOriginalInstanceIndex) && !InstancedOutputPartData.AllBakeActorClassNames[FirstOriginalInstanceIndex].IsEmpty())
 				NewOutputObject.CachedAttributes.Add(HAPI_UNREAL_ATTRIB_BAKE_ACTOR_CLASS, InstancedOutputPartData.AllBakeActorClassNames[FirstOriginalInstanceIndex]);
+
+			if(InstancedOutputPartData.HLODLayers.IsValidIndex(FirstOriginalInstanceIndex))
+			{
+				NewOutputObject.HLODLayers.Add(InstancedOutputPartData.HLODLayers[FirstOriginalInstanceIndex]);
+			}
+
+			if (InstancedOutputPartData.DataLayers.IsValidIndex(FirstOriginalInstanceIndex))
+			{
+				NewOutputObject.DataLayers = InstancedOutputPartData.DataLayers[FirstOriginalInstanceIndex].DataLayers;
+			}
 
 			// TODO: Check if we should apply the same logic to other cached attributes?
 			// When using PDG, we have one bake folder per PDG output (array size 1)
@@ -1850,9 +1863,9 @@ FHoudiniInstanceTranslator::GetAttributeInstancerObjectsAndTransforms(
 			SplitIndicesMap.FindOrAdd(SplitAttrValue).Add(CurrentIndices[InstIdx]);
 			
 			// Record attributes for any split value we have not yet seen
+			FHoudiniInstancedOutputPerSplitAttributes& PerSplitAttributes = OutPerSplitAttributes.FindOrAdd(SplitAttrValue);
 			if (bHasAnyPerSplitAttributes)
 			{
-				FHoudiniInstancedOutputPerSplitAttributes& PerSplitAttributes = OutPerSplitAttributes.FindOrAdd(SplitAttrValue);
 				if (bHasLevelPaths && PerSplitAttributes.LevelPath.IsEmpty() && AllLevelPaths.IsValidIndex(InstIdx))
 				{
 					PerSplitAttributes.LevelPath = AllLevelPaths[InstIdx];
@@ -1870,6 +1883,10 @@ FHoudiniInstanceTranslator::GetAttributeInstancerObjectsAndTransforms(
 					PerSplitAttributes.BakeOutlinerFolder = AllBakeOutlinerFolders[InstIdx];
 				}
 			}
+
+			PerSplitAttributes.DataLayers = FHoudiniDataLayerUtils::GetDataLayers(InHGPO.GeoId, InHGPO.PartId, HAPI_GroupType::HAPI_GROUPTYPE_POINT, InstIdx);
+			PerSplitAttributes.HLODLayers = FHoudiniHLODLayerUtils::GetHLODLayers(InHGPO.GeoId, InHGPO.PartId, HAPI_ATTROWNER_POINT, InstIdx);
+
 		}
 
 		// Add the objects, transform, split values to the final arrays
