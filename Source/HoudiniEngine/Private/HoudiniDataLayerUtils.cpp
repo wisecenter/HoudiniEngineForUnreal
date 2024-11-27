@@ -166,7 +166,7 @@ FHoudiniDataLayerUtils::GetDataLayers(HAPI_NodeId NodeId, HAPI_PartId PartId, HA
 	FHoudiniHapiAccessor Accessor;
 	Accessor.Init(NodeId, PartId, HAPI_UNREAL_ATTRIB_CREATE_DATA_LAYERS);
 	bool bSuccess = Accessor.GetAttributeData(HAPI_ATTROWNER_POINT, CreateFlags);
-	bool bDefaultCreateFlags = false;
+	int bDefaultCreateFlags = 0;
 	Accessor.GetAttributeFirstValue(HAPI_ATTROWNER_DETAIL, bDefaultCreateFlags);
 
 	// Check each group to see if we're a member.
@@ -195,7 +195,7 @@ FHoudiniDataLayerUtils::GetDataLayers(HAPI_NodeId NodeId, HAPI_PartId PartId, HA
 				if(CreateFlags.IsValidIndex(Index))
 					Layer.bCreateIfNeeded = CreateFlags[Index] != 0;
 				else
-					Layer.bCreateIfNeeded = bDefaultCreateFlags;
+					Layer.bCreateIfNeeded = bDefaultCreateFlags != 0;
 
 				Results[Index].DataLayers.Add(Layer);
 			}
