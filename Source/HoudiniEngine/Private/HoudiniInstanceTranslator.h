@@ -388,6 +388,15 @@ struct HOUDINIENGINE_API FHoudiniInstanceTranslator
 			USceneComponent*& CreatedInstancedComponent,
 			const TArray<UMaterialInterface *>& InstancerMaterials);
 
+	// Helper function used to spawn a new Actor for UHoudiniInstancedActorComponent
+	// Relies on editor-only functionalities, so this function is not on the IAC itself
+	static AActor* SpawnInstanceActor(
+		const FTransform& InTransform,
+		ULevel* InSpawnLevel, 
+		UHoudiniInstancedActorComponent* InIAC,
+		AActor* InReferenceActor,
+		FName Name = NAME_None);
+
 		// Create or update a StaticMeshComponent (when we have only one instance)
 		static bool CreateOrUpdateStaticMeshComponent(
 			UStaticMesh* InstancedStaticMesh,
