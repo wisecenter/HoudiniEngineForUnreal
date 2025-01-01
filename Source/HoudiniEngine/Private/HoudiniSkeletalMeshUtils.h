@@ -42,7 +42,7 @@ struct FHoudiniSkeletonBone
 	FString Name;
 	FTransform UnrealGlobalTransform;
 	FTransform UnrealLocalMatrix;
-	int Id = -1;
+	int UnrealBoneNumber = -1;
 	int HoudiniBoneNumber = -1;;
 	TArray<FHoudiniSkeletonBone *> Children;
 	FHoudiniSkeletonBone * Parent = nullptr;

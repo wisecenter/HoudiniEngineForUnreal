@@ -165,7 +165,7 @@ FHoudiniSkeleton FHoudiniSkeletalMeshUtils::FetchSkeleton(HAPI_NodeId NodeId, HA
 	{
 		FHoudiniSkeletonBone & Bone = Result.Bones[Index];
 		Bone.Name = BoneNames[Index];
-		Bone.Id = Index;
+		Bone.UnrealBoneNumber = Index;
 		Result.BoneMap.Add(Bone.Name, &Bone);
 	}
 
@@ -545,6 +545,7 @@ FHoudiniSkeleton FHoudiniSkeletalMeshUtils::UnrealToHoudiniSkeleton(USkeleton * 
 		ThisBone.Name = BoneName;
 		ThisBone.UnrealGlobalTransform = BoneTransform;
 		ThisBone.UnrealLocalMatrix = BoneTransform;
+		ThisBone.UnrealBoneNumber = BoneIndex;
 		if (ParentIndex != INDEX_NONE)
 		{
 			auto& ParentBone = HoudiniSkeleton.Bones[ParentIndex];
@@ -579,6 +580,8 @@ bool FHoudiniSkeletalMeshUtils::RemapInfluences(FHoudiniInfluences& Influences, 
 {
 	bool bErrors = false;
 
+	TSet<FString> MissingBones;
+
 	for(FHoudiniSkinInfluence& Influence : Influences.Influences)
 	{
 		if (Influence.Bone == nullptr)
@@ -609,8 +612,12 @@ bool FHoudiniSkeletalMeshUtils::RemapInfluences(FHoudiniInfluences& Influences, 
 				}
 
 			}
-			
-			HOUDINI_LOG_WARNING(TEXT("Could not find bone in unreal skeleton %s. Using %s."), *BoneName, *Ancestor->Name);
+
+			if (!MissingBones.Contains(*BoneName))
+			{
+				MissingBones.Add(*BoneName);
+				HOUDINI_LOG_WARNING(TEXT("Could not find bone in unreal skeleton %s. Using %s."), *BoneName, *Ancestor->Name);
+			}
 			bErrors = true;
 		}
 	}
