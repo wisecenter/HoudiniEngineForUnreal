@@ -69,20 +69,21 @@ class HOUDINIENGINERUNTIME_API UHoudiniMeshSplitInstancerComponent : public USce
 		bool SetInstanceTransforms(const TArray<FTransform>& InstanceTransforms);
     		
 		// Instance Accessor
-		TArray<class UStaticMeshComponent*>& GetInstancesForWrite() { return Instances; }		
-		// const Instance accessor
-		const TArray<class UStaticMeshComponent*>& GetInstances() const { return Instances; }
+		TArray<TObjectPtr<UStaticMeshComponent>>& GetInstancesForWrite() { return Instances; }
 
-		TArray<class UMaterialInterface*> GetOverrideMaterials() const { return OverrideMaterials; }
+		// const Instance accessor
+		const TArray<TObjectPtr<UStaticMeshComponent>>& GetInstances() const { return Instances; }
+
+		TArray<TObjectPtr<UMaterialInterface>> GetOverrideMaterials() const { return OverrideMaterials; }
 
 	private:
 
 		UPROPERTY(VisibleInstanceOnly, Category = Instances)
-		TArray<class UStaticMeshComponent*> Instances;
+		TArray<TObjectPtr<UStaticMeshComponent>> Instances;
 
 		UPROPERTY(VisibleInstanceOnly, Category = Instances)
-		TArray<class UMaterialInterface*> OverrideMaterials;
+		TArray<TObjectPtr<UMaterialInterface>> OverrideMaterials;
 
 		UPROPERTY(VisibleAnywhere, Category = Instances)
-		class UStaticMesh* InstancedMesh;
+		TObjectPtr<UStaticMesh> InstancedMesh;
 };

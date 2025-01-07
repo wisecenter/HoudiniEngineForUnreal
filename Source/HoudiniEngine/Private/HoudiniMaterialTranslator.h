@@ -173,10 +173,10 @@ public:
 		const FHoudiniPackageParams& InPackageParams,
 		const TArray<int32>& InUniqueMaterialIds,
 		const TArray<HAPI_MaterialInfo>& InUniqueMaterialInfos,
-		const TMap<FHoudiniMaterialIdentifier, UMaterialInterface *>& InMaterials,
-		const TMap<FHoudiniMaterialIdentifier, UMaterialInterface *>& InAllOutputMaterials,
-		TMap<FHoudiniMaterialIdentifier, UMaterialInterface *>& OutMaterials,
-		TArray<UMaterialInterface *> & OutMaterialArray,
+		const TMap<FHoudiniMaterialIdentifier, TObjectPtr<UMaterialInterface>>& InMaterials,
+		const TMap<FHoudiniMaterialIdentifier, TObjectPtr<UMaterialInterface>>& InAllOutputMaterials,
+		TMap<FHoudiniMaterialIdentifier, TObjectPtr<UMaterialInterface>>& OutMaterials,
+		TArray<UMaterialInterface*> & OutMaterialArray,
 		TArray<UPackage*>& OutPackages,
 		const bool& bForceRecookAll,
 		bool bInTreatExistingMaterialsAsUpToDate=false,
@@ -188,8 +188,8 @@ public:
 		const FHoudiniPackageParams& InPackageParams,
 		const TMap<FHoudiniMaterialIdentifier, FHoudiniMaterialInfo>& UniqueMaterialInstanceOverrides,
 		const TArray<UPackage*>& InPackages,
-		const TMap<FHoudiniMaterialIdentifier, UMaterialInterface*>& InMaterials,
-		TMap<FHoudiniMaterialIdentifier, UMaterialInterface*>& OutMaterials,
+		const TMap<FHoudiniMaterialIdentifier, TObjectPtr<UMaterialInterface>>& InMaterials,
+		TMap<FHoudiniMaterialIdentifier, TObjectPtr<UMaterialInterface>>& OutMaterials,
 		const bool& bForceRecookAll);
 
 
@@ -220,8 +220,8 @@ public:
 		const FHoudiniGeoPartObject& InHGPO,
 		const FHoudiniPackageParams& InPackageParams,
 		const TArray<UPackage*>& InPackages,
-		const TMap<FHoudiniMaterialIdentifier, UMaterialInterface*>& InMaterials,
-		TMap<FHoudiniMaterialIdentifier, UMaterialInterface*>& OutMaterials,
+		const TMap<FHoudiniMaterialIdentifier, TObjectPtr<UMaterialInterface>>& InMaterials,
+		TMap<FHoudiniMaterialIdentifier, TObjectPtr<UMaterialInterface>>& OutMaterials,
 		const bool& bForceRecookAll);
 
 	// Helper to check if MaterialParameter is supported by instances of MaterialInterface and to resolve the value to

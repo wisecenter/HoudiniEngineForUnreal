@@ -105,7 +105,7 @@ public:
 	bool bForceInstancer = false;
 
 	UPROPERTY()
-	TArray<UObject*> OriginalInstancedObjects;
+	TArray<TObjectPtr<UObject>> OriginalInstancedObjects;
 
 	// Object paths of OriginalInstancedObjects. Used by message passing system
 	// when sending messages from the async importer to the PDG manager. UObject*/references
@@ -264,7 +264,7 @@ struct HOUDINIENGINE_API FHoudiniInstanceTranslator
 		static bool GetInstancerObjectsAndTransforms(
 			const FHoudiniGeoPartObject& InHGPO,
 			const TArray<UHoudiniOutput*>& InAllOutputs,
-			TArray<UObject*>& OutInstancedObjects,
+			TArray<TObjectPtr<UObject>>& OutInstancedObjects,
 			TArray<TArray<FTransform>>& OutInstancedTransforms,
 			TArray<TArray<int32>>& OutInstancedIndices,
 			FString& OutSplitAttributeName,

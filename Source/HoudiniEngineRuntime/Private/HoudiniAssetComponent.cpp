@@ -777,7 +777,7 @@ UHoudiniAssetComponent::NotifyCookedToDownstreamAssets()
 				// Make sure that the 
 				if (!CurrentDownstreamInput->GetImportAsReference())
 				{
-					const TArray<UHoudiniInputObject*>* ObjectArray = CurrentDownstreamInput->GetHoudiniInputObjectArray(CurrentDownstreamInputType);
+					const TArray<TObjectPtr<UHoudiniInputObject>>* ObjectArray = CurrentDownstreamInput->GetHoudiniInputObjectArray(CurrentDownstreamInputType);
 					if (ObjectArray)
 					{
 						for (auto& CurrentInputObject : (*ObjectArray))
@@ -829,7 +829,7 @@ UHoudiniAssetComponent::NeedsToWaitForInputHoudiniAssets()
 		if (!CurrentInput->IsAssetInput())
 			continue;
 
-		TArray<UHoudiniInputObject*>* ObjectArray = CurrentInput->GetHoudiniInputObjectArray(CurrentInputType);
+		TArray<TObjectPtr<UHoudiniInputObject>>* ObjectArray = CurrentInput->GetHoudiniInputObjectArray(CurrentInputType);
 		if (!ObjectArray)
 			continue;
 
@@ -948,7 +948,7 @@ UHoudiniAssetComponent::MarkAsNeedCook()
 		// object as changed/need update and explicitly call the Update function on each input object. For example, for
 		// input actors this would recreate the Houdini input actor components from the actor's components, picking up
 		// any new components since the last call to Update.
-		TArray<UHoudiniInputObject*>* InputObjectArray = CurrentInput->GetHoudiniInputObjectArray(CurrentInput->GetInputType());
+		TArray<TObjectPtr<UHoudiniInputObject>>* InputObjectArray = CurrentInput->GetHoudiniInputObjectArray(CurrentInput->GetInputType());
 		if (InputObjectArray && InputObjectArray->Num() > 0)
 		{
 			for (auto CurrentInputObject : *InputObjectArray)
@@ -1320,7 +1320,7 @@ UHoudiniAssetComponent::OnComponentDestroyed(bool bDestroyingHierarchy)
 	HoudiniAsset = nullptr;
 
 	// Clear Parameters
-	for (UHoudiniParameter*& CurrentParm : Parameters)
+	for (TObjectPtr<UHoudiniParameter>& CurrentParm : Parameters)
 	{
 		if (IsValid(CurrentParm))
 		{
@@ -1339,7 +1339,7 @@ UHoudiniAssetComponent::OnComponentDestroyed(bool bDestroyingHierarchy)
 	Parameters.Empty();
 
 	// Clear Inputs
-	for (UHoudiniInput*&  CurrentInput : Inputs)
+	for (TObjectPtr<UHoudiniInput>&  CurrentInput : Inputs)
 	{
 		if (!IsValid(CurrentInput))
 			continue;
@@ -1355,7 +1355,7 @@ UHoudiniAssetComponent::OnComponentDestroyed(bool bDestroyingHierarchy)
 	Inputs.Empty();
 
 	// Clear Output
-	for (UHoudiniOutput*& CurrentOutput : Outputs)
+	for (TObjectPtr<UHoudiniOutput>& CurrentOutput : Outputs)
 	{
 		if (!IsValid(CurrentOutput))
 			continue;
@@ -1364,7 +1364,7 @@ UHoudiniAssetComponent::OnComponentDestroyed(bool bDestroyingHierarchy)
 			continue;
 
 		// Destroy all Houdini created socket actors.
-		TArray<AActor*> & CurCreatedSocketActors = CurrentOutput->GetHoudiniCreatedSocketActors();
+		TArray<TObjectPtr<AActor>> & CurCreatedSocketActors = CurrentOutput->GetHoudiniCreatedSocketActors();
 		for (auto & CurCreatedActor : CurCreatedSocketActors) 
 		{
 			if (!IsValid(CurCreatedActor))
@@ -1375,7 +1375,7 @@ UHoudiniAssetComponent::OnComponentDestroyed(bool bDestroyingHierarchy)
 		CurCreatedSocketActors.Empty();
 
 		// Detach all Houdini attached socket actors
-		TArray<AActor*> & CurAttachedSocketActors = CurrentOutput->GetHoudiniAttachedSocketActors();
+		TArray<TObjectPtr<AActor>> & CurAttachedSocketActors = CurrentOutput->GetHoudiniAttachedSocketActors();
 		for (auto & CurAttachedSocketActor : CurAttachedSocketActors) 
 		{
 			if (!IsValid(CurAttachedSocketActor))

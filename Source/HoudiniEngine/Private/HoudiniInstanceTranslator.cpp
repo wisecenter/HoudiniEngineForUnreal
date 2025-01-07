@@ -951,7 +951,7 @@ bool
 FHoudiniInstanceTranslator::GetInstancerObjectsAndTransforms(
 	const FHoudiniGeoPartObject& InHGPO,
 	const TArray<UHoudiniOutput*>& InAllOutputs,
-	TArray<UObject*>& OutInstancedObjects,
+	TArray<TObjectPtr<UObject>>& OutInstancedObjects,
 	TArray<TArray<FTransform>>& OutInstancedTransforms,
 	TArray<TArray<int32>>& OutInstancedIndices,
 	FString& OutSplitAttributeName,
@@ -2697,7 +2697,7 @@ FHoudiniInstanceTranslator::CreateOrUpdateMeshSplitInstancerComponent(
 		}
 
 		// Apply them to the instances
-		TArray<class UStaticMeshComponent*>& Instances = MeshSplitComponent->GetInstancesForWrite();
+		auto & Instances = MeshSplitComponent->GetInstancesForWrite();
 		for (int32 InstIndex = 0; InstIndex < Instances.Num(); InstIndex++)
 		{
 			UStaticMeshComponent* CurSMC = Instances[InstIndex];
@@ -2735,7 +2735,7 @@ FHoudiniInstanceTranslator::CreateOrUpdateMeshSplitInstancerComponent(
 	// if failing to find the attrib on a component, skip the rest
 	if (AllPropertyAttributes.Num() > 0)
 	{
-		TArray<class UStaticMeshComponent*>& Instances = MeshSplitComponent->GetInstancesForWrite();
+		auto & Instances = MeshSplitComponent->GetInstancesForWrite();
 		for (int32 InstIndex = 0; InstIndex < Instances.Num(); InstIndex++)
 		{
 			UStaticMeshComponent* CurSMC = Instances[InstIndex];
@@ -3437,8 +3437,8 @@ FHoudiniInstanceTranslator::GetInstancerMaterialInstances(
 		return true;
 	
 	TArray<UPackage*> MaterialAndTexturePackages;
-	TMap<FHoudiniMaterialIdentifier, UMaterialInterface*> InputAssignmentMaterials;
-	TMap<FHoudiniMaterialIdentifier, UMaterialInterface*> OutputAssignmentMaterials;
+	TMap<FHoudiniMaterialIdentifier, TObjectPtr<UMaterialInterface>> InputAssignmentMaterials;
+	TMap<FHoudiniMaterialIdentifier, TObjectPtr<UMaterialInterface>> OutputAssignmentMaterials;
 	static constexpr bool bForceRecookAll = false;
 	bool bSuccess = false;
 	if (FHoudiniMaterialTranslator::CreateMaterialInstances(
@@ -3460,7 +3460,7 @@ FHoudiniInstanceTranslator::GetInstancerMaterialInstances(
 			// skip the invalid ids (non material instance)
 			if (!MaterialIdentifier.IsValid())
 				continue;
-			UMaterialInterface** Material = OutputAssignmentMaterials.Find(MaterialIdentifier);
+			TObjectPtr<UMaterialInterface>* Material = OutputAssignmentMaterials.Find(MaterialIdentifier);
 			if (!Material || !IsValid(*Material))
 			{
 				OutInstancerMaterials[SlotIdx] = nullptr;

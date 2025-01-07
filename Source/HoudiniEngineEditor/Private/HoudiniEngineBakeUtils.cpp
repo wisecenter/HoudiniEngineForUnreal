@@ -7520,7 +7520,7 @@ FHoudiniEngineBakeUtils::BakePDGWorkResultObject(
 		return false;
 	
 	FTOPWorkResultObject& WorkResultObject = WorkResult.ResultObjects[InWorkResultObjectArrayIndex];
-	TArray<UHoudiniOutput*>& Outputs = WorkResultObject.GetResultOutputs();
+	TArray<TObjectPtr<UHoudiniOutput>>& Outputs = WorkResultObject.GetResultOutputs();
 	if (Outputs.Num() == 0)
 		return true;
 
